@@ -19,8 +19,20 @@ $router->get('/key', function() {
     return str_random(32);
 });
 
-$router->get('/item', 'ItemController@showAll');
-$router->get('/item/{id}', 'ItemController@showId');
-$router->post('/item', 'ItemController@add');
-$router->put('/item/{id}', 'ItemController@update');
-$router->delete('/item/{id}', 'ItemController@delete');
+$router->post('api/v1/login', 'LoginController@login');
+
+$router->group(['middleware' => 'auth_token'], function () use ($router) {
+    $router->group(['prefix' => 'api/v1'], function () use ($router) {
+        $router->get('/users', 'UserController@showAll');
+        $router->get('/users/{id}', 'UserController@showId');
+        $router->post('/users', 'UserController@add');
+        $router->put('/users/{id}', 'UserController@update');
+        $router->delete('/users/{id}', 'UserController@delete');
+    
+        $router->get('/items', 'ItemController@showAll');
+        $router->get('/items/{id}', 'ItemController@showId');
+        $router->post('/items', 'ItemController@add');
+        $router->put('/items/{id}', 'ItemController@update');
+        $router->delete('/items/{id}', 'ItemController@delete');
+    });
+});

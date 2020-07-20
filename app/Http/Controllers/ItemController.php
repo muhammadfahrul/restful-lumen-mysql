@@ -26,20 +26,24 @@ class ItemController extends Controller
     {
         $data = Item::all();
         if(!$data) {
-            return response('Data not found');
+            return response()->json([
+                "message" => "Data not found"
+            ]);
         }
 
-        return response($data);
+        return response()->json($data);
     }
 
     public function showId($id)
     {
         $data = Item::find($id);
         if(!$data) {
-            return response('Parameter not found');
+            return response()->json([
+                "message" => "Parameter Not Found"
+            ]);
         }
 
-        return response($data);
+        return response()->json($data);
     }
 
     public function add(Request $request)
@@ -62,14 +66,16 @@ class ItemController extends Controller
             $rand_md5 = md5($rand).".".$image->extension();
             $data->image = $rand_md5;
 
-            $image->move(storage_path('image'),$rand_md5);
+            $image->move(storage_path('images'),$rand_md5);
         }
         // $image = Str::random(20);
-        // $request->file('image')->move(storage_path('image'), $image);
+        // $request->file('image')->move(storage_path('images'), $image);
         // $data->image = $image;
         $data->save();
 
-        return response('Success Added');
+        return response()->json([
+            "message" => "Success Added"
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -93,31 +99,44 @@ class ItemController extends Controller
                 $rand_md5 = md5($rand).".".$image->extension();
                 $data->image = $rand_md5;
 
-                $image->move(storage_path('image'),$rand_md5);
+                $image->move(storage_path('images'),$rand_md5);
             }
             // $image = Str::random(20);
             // $data->image = $image;
-            // $current_avatar_path = storage_path('image') . '/' . $data->image;
+            // $current_avatar_path = storage_path('images') . '/' . $data->image;
             // if (file_exists($current_avatar_path)) {
             //     unlink($current_avatar_path);
             // }
             $data->save();
 
-            return response('Success Updated');
+            return response()->json([
+                "message" => "Success Updated"
+            ]);
         }else {
-            return response('No Parameter');
+            return response()->json([
+                "message" => "Parameter Not Found"
+            ]);
         }        
     }
 
     public function delete($id)
     {
         $data = Item::find($id);
+        
+        if ($data->image) {
+            unlink(storage_path('images/' . $data->image));
+        }
+
         if($data) {
             $data->delete();
 
-            return response('Success Deleted');
+            return response()->json([
+                "message" => "Success Deleted"
+            ]);
         }else {
-            return response('No Parameter');
+            return response()->json([
+                "message" => "Parameter Not Found"
+            ]);
         }        
     }
 }
