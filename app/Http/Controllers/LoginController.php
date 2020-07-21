@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\User;
 
+use Validator;
+use Firebase\JWT\JWT;
+use Firebase\JWT\ExpiredException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
@@ -24,7 +27,20 @@ class LoginController extends Controller
         //
     }
 
-    public function login(Request $request)
+    protected function jwt(User $user) {
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued. 
+            'exp' => time() + 60*60 // Expiration time
+        ];
+        
+        // As you can see we are passing `JWT_SECRET` as the second parameter that will 
+        // be used to decode the token in the future.
+        return JWT::encode($payload, env('JWT_SECRET'));
+    } 
+
+    public function login(Request $request, User $user)
     {
         $this->validate($request, [
             'email' => 'required|string',
@@ -33,24 +49,23 @@ class LoginController extends Controller
 
         $email = $request->input('email');
         $password = $request->input('password');
-        $api_token = Hash::make($email);
+        $api_token = $this->jwt($user);
 
-        $check_user = User::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
 
-        if (!$check_user) {
+        if (!$user) {
             return response()->json([
                 "message" => "Login Failed"
             ]);
         }
 
-        if (Hash::check($password, $check_user->password)) {
-            $check_user->api_token = $api_token;
-            $check_user->save();
+        if (Hash::check($password, $user->password)) {
+            $user->api_token = $api_token;
+            $user->save();
 
             return response()->json([
                 "message" => "Login Success",
-                "api_token" => $api_token,
-                "users" => $check_user,
+                "users" => $user,
             ]);
         }else {
             return response()->json([
