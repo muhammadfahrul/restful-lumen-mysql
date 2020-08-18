@@ -21,7 +21,7 @@ $router->get('/key', function() {
 
 $router->post('api/v1/login', 'LoginController@login');
 
-$router->group(['middleware' => 'auth_token'], function () use ($router) {
+// $router->group(['middleware' => 'auth_token'], function () use ($router) {
     $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->get('/users', 'UserController@showAll');
         $router->get('/users/{id}', 'UserController@showId');
@@ -35,4 +35,4 @@ $router->group(['middleware' => 'auth_token'], function () use ($router) {
         $router->put('/items/{id}', 'ItemController@update');
         $router->delete('/items/{id}', 'ItemController@delete');
     });
-});
+// });
