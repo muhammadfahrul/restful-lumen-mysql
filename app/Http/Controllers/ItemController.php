@@ -31,7 +31,11 @@ class ItemController extends Controller
             ]);
         }
 
-        return response()->json($data);
+        return response()->json([
+            "message" => "Success retrieve data",
+            "status" => true,
+            "data" => $data
+        ]);
     }
 
     public function showId($id)
@@ -43,7 +47,11 @@ class ItemController extends Controller
             ]);
         }
 
-        return response()->json($data);
+        return response()->json([
+            "message" => "Success retrieve data",
+            "status" => true,
+            "data" => $data
+        ]);
     }
 
     public function add(Request $request)
@@ -74,7 +82,9 @@ class ItemController extends Controller
         $data->save();
 
         return response()->json([
-            "message" => "Success Added"
+            "message" => "Success Added",
+            "status" => true,
+            "data" => $data
         ]);
     }
 
@@ -110,8 +120,10 @@ class ItemController extends Controller
             $data->save();
 
             return response()->json([
-                "message" => "Success Updated"
-            ]);
+                "message" => "Success Updated",
+                "status" => true,
+                "data" => $data
+            ]); 
         }else {
             return response()->json([
                 "message" => "Parameter Not Found"
@@ -131,8 +143,10 @@ class ItemController extends Controller
             $data->delete();
 
             return response()->json([
-                "message" => "Success Deleted"
-            ]);
+                "message" => "Success Deleted",
+                "status" => true,
+                "data" => $data
+            ]); 
         }else {
             return response()->json([
                 "message" => "Parameter Not Found"

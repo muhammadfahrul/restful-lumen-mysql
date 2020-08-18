@@ -32,7 +32,11 @@ class UserController extends Controller
             ]);
         }
 
-        return response()->json($data);
+        return response()->json([
+            "message" => "Success retrieve data",
+            "status" => true,
+            "data" => $data
+        ]);
     }
 
     public function showId($id)
@@ -44,7 +48,11 @@ class UserController extends Controller
             ]);
         }
 
-        return response()->json($data);
+        return response()->json([
+            "message" => "Success retrieve data",
+            "status" => true,
+            "data" => $data
+        ]);
     }
 
     public function add(Request $request)
@@ -63,7 +71,9 @@ class UserController extends Controller
         $data->save();
 
         return response()->json([
-            "message" => "Success Added"
+            "message" => "Success Added",
+            "status" => true,
+            "data" => $data
         ]);
     }
 
@@ -84,8 +94,10 @@ class UserController extends Controller
             $data->save();
 
             return response()->json([
-                "message" => "Success Updated"
-            ]);
+                "message" => "Success Updated",
+                "status" => true,
+                "data" => $data
+            ]); 
         }else {
             return response()->json([
                 "message" => "Parameter Not Found"
@@ -100,8 +112,10 @@ class UserController extends Controller
             $data->delete();
 
             return response()->json([
-                "message" => "Success Deleted"
-            ]);
+                "message" => "Success Deleted",
+                "status" => true,
+                "data" => $data
+            ]);   
         }else {
             return response()->json([
                 "message" => "Parameter Not Found"
